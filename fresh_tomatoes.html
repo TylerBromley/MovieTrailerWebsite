@@ -1,10 +1,15 @@
+import webbrowser
+import os
+import re
 
+
+# Styles and scripting for the page
+main_page_head = '''
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Fresh Tomatoes!</title>
-
     <!-- Bootstrap 3 -->
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
@@ -77,7 +82,11 @@
         });
     </script>
 </head>
+'''
 
+
+# The main page layout and title bar
+main_page_content = '''
   <body>
     <!-- Trailer Video Modal -->
     <div class="modal" id="trailer">
@@ -91,7 +100,6 @@
         </div>
       </div>
     </div>
-
     <!-- Main Page Content -->
     <div class="container">
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -103,37 +111,55 @@
       </div>
     </div>
     <div class="container">
-
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="EBQHp2__AVQ" data-toggle="modal" data-target="#trailer">
-    <img src="https://upload.wikimedia.org/wikipedia/en/3/32/Audition-1999-poster.jpg" width="220" height="342">
-    <h2>Audition</h2>
-</div>
-
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="5PSNL1qE6VY" data-toggle="modal" data-target="#trailer">
-    <img src="https://upload.wikimedia.org/wikipedia/en/2/2e/Jules_et_jim_affiche.jpg" width="220" height="342">
-    <h2>Jules et Jim</h2>
-</div>
-
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="yE-f1alkq9I" data-toggle="modal" data-target="#trailer">
-    <img src="https://upload.wikimedia.org/wikipedia/en/6/62/Eternal_sunshine_of_the_spotless_mind_ver3.jpg" width="220" height="342">
-    <h2>Eternal Sunshine of the Spotless Mind</h2>
-</div>
-
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="Q9CFcTY_pik" data-toggle="modal" data-target="#trailer">
-    <img src="file:///Users/tylerbromley/ProgrammingFoundations/Children_of_men_ver4.jpeg" width="220" height="342">
-    <h2>Children of Men</h2>
-</div>
-
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="bJFFy3soy9Y" data-toggle="modal" data-target="#trailer">
-    <img src="https://upload.wikimedia.org/wikipedia/en/3/3f/%C3%80_bout_de_souffle_%28movie_poster%29.jpg" width="220" height="342">
-    <h2>A Bout de Souffle</h2>
-</div>
-
-<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="W6iVPCRflQM" data-toggle="modal" data-target="#trailer">
-    <img src="https://upload.wikimedia.org/wikipedia/en/4/4c/Lost_in_Translation_poster.jpg" width="220" height="342">
-    <h2>Lost In Translation</h2>
-</div>
-
+      {movie_tiles}
     </div>
   </body>
 </html>
+'''
+
+
+# A single movie entry html template
+movie_tile_content = '''
+<div class="col-md-6 col-lg-4 movie-tile text-center" data-trailer-youtube-id="{trailer_youtube_id}" data-toggle="modal" data-target="#trailer">
+    <img src="{poster_image_url}" width="220" height="342">
+    <h2>{movie_title}</h2>
+</div>
+'''
+
+
+def create_movie_tiles_content(movies):
+    # The HTML content for this section of the page
+    content = ''
+    for movie in movies:
+        # Extract the youtube ID from the url
+        youtube_id_match = re.search(
+            r'(?<=v=)[^&#]+', movie.trailer_youtube_url)
+        youtube_id_match = youtube_id_match or re.search(
+            r'(?<=be/)[^&#]+', movie.trailer_youtube_url)
+        trailer_youtube_id = (youtube_id_match.group(0) if youtube_id_match
+                              else None)
+
+        # Append the tile for the movie with its content filled in
+        content += movie_tile_content.format(
+            movie_title=movie.title,
+            poster_image_url=movie.poster_image_url,
+            trailer_youtube_id=trailer_youtube_id
+        )
+    return content
+
+
+def open_movies_page(movies):
+    # Create or overwrite the output file
+    output_file = open('fresh_tomatoes.html', 'w')
+
+    # Replace the movie tiles placeholder generated content
+    rendered_content = main_page_content.format(
+        movie_tiles=create_movie_tiles_content(movies))
+
+    # Output the file
+    output_file.write(main_page_head + rendered_content)
+    output_file.close()
+
+    # open the output file in the browser (in a new tab, if possible)
+    url = os.path.abspath(output_file.name)
+webbrowser.open('file://' + url, new=2)
