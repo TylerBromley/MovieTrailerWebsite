@@ -4,12 +4,13 @@ A webpage listing my favorite movies and showing their posters. Click on the pos
 
 ## Getting Started
 
-Type git clone , and then paste the URL you copied in Step 2. Press Enter. Your local clone will be created.
+* Click on the **clone or download** button in the upper righthand corner of the MovieTrailerWebsite main page.
+* Copy the URL.
+* Type git clone , and then paste the URL you copied in Step 2. Press Enter. Your local clone will be created.
 
 ### Prerequisites
 
 Python is required. For download instructions, go to https://www.python.org/downloads/
-
 
 ### Usage
 
