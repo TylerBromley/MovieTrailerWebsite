@@ -1,6 +1,7 @@
 import fresh_tomatoes
 import media
 
+""" The individual instances of the class Movie and their relevant information """
 
 audition = media.Movie(
     "Audition",
@@ -45,7 +46,7 @@ lost_in_translation = media.Movie(
     "https://www.youtube.com/watch?v=W6iVPCRflQM"
 )
 
-
+# List to be used by fresh_tomatoes.py to populate the page.
 movies = [
             audition,
             jules_and_jim,
@@ -55,4 +56,5 @@ movies = [
             lost_in_translation,
 ]
 
+# Call to fresh_tomatoes.py to create an html page with the movies list.
 fresh_tomatoes.open_movies_page(movies)
