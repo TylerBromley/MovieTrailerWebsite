@@ -13,7 +13,7 @@ Python is required. For download instructions, go to https://www.python.org/down
 
 ### Usage
 
-* cd into the project folder.
-* type `python entertainment_center.py`
+* from the command line, cd into the project folder.
+* type `python entertainment_center.py`into the command line.
 * Open the newly created `fresh_tomatoes.html` file in the browser.
 * Click on the images to show YouTube trailers.
